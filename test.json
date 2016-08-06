@@ -1,0 +1,24 @@
+{
+"total":3,
+"rows":[
+   {
+   "userId":1,
+   "realName":"张梅",
+   "headUrl":"href='teacherDetail.html'",
+   "img":"src='images/teacher.jpg'",
+   "introduction":"热情大方。"
+   },{
+   "userId":2,
+   "realName":"张三",
+   "headUrl":"href='teacherDetail.html'",
+   "img":"src='images/teacher.jpg'",
+   "introduction":"热情大方。"
+   },{
+   "userId":3,
+   "realName":"李斯",
+   "headUrl":"href='teacherDetail.html'",
+   "img":"src='images/teacher.jpg'",
+   "introduction":"热情大方"
+   }
+]
+}

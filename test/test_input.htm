@@ -1,0 +1,61 @@
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+      <title>search</title>
+      <style type="text/css">
+      body{background-color: #333;}
+      .div1{background-image: url(../images/bg1.jpg);width:1920px;height: 1080px;margin: 0 auto;position: relative;}
+      .logo{margin: -1px 8px 0 0;background-image: url(../images/bing.png);width:103px;height: 55px;float: left;}
+       form{float:left;background-color: #fff;padding: 5px;}
+       .search-input-text{border: 0;float:left;height:45px;line-height: 45px;outline:none;width: 290px;}
+       .search-input-button{border: 0;background-image: url(../images/search1.jpg);width: 46px;height: 46px;float: left;}
+       #search-box{position: absolute;top:300px;left: 500px;}
+       .suggest{width: 345.5px;background-color: #fff;boder:1px solid #999;}
+       .suggest ul{list-style: none;margin:0;padding: 0;}
+       .suggest ul li{padding: 3px;font-size: 14px;line-height: 25px;cursor: pointer;}
+       .suggest ul li:hover{text-decoration: underline;background-color: #e5e5e5;}
+      </style>
+</head>
+<body>
+	<div class="div1">
+	  <div id="search-box">
+		<div class="logo"></div>
+	    <form class="search-form" id="formtest">
+     	   <input type="text"  class="search-input-text" id="search_input" autocomplete="off"/>
+     	   <input type="submit" class="search-input-button"/ value="">
+        </form>
+        </div> 
+    </div>
+    <div class="suggest" id="search-suggest" style="display:none">
+     <ul id="search-result">
+      <li>kobe</li>
+      <li>durant</li>
+     </ul>
+    </div>
+</body>
+</html>
+<script src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+$('#search_input').bind('keyup',function(){
+	var searchtext=$('#search_input').val();
+	$.get('http://api.bing.com/qsonhs.aspx?q='+searchtext,function(d){
+		var d=d.AS.Result[0].Suggests;
+		var html='';
+		for(var i=0;i<d.length;i++){
+           html+='<li>'+d[i].Txt+'</li>';
+		}
+		#('search-result').html(html);
+		$('#search-suggest').show().css({
+		top:$('#formtest').offset().top+$('#formtest').height()+10.2,
+		left:$('#formtest').offset().left,
+        position:'absolute'
+	   });
+	},'json')
+	
+});
+$(document).bind('click',function(){
+  $('#search-suggest').hide();
+});
+</script>

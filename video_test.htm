@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script src="//api.html5media.info/1.1.8/html5media.min.js"></script>
+</head>
+<body>
+
+<video id="video1" controls="controls" loop="loop">
+<source src="89.mp4">
+your browser does not support the video tag
+</video>
+<input type="button" id="b1" value="set time"/>
+<input type="button" id="pause" value="pause"/>
+<input type="button" id="change_src" value="change_src"/>
+</body>
+</html>
+<script src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+$video=$('#video1');
+$('#b1').bind('click',function(){
+	var second=FrametoSecond(711);
+   video1.currentTime=second;
+})
+
+$('#pause').bind('click',function(){
+	var second=FrametoSecond(1000);
+	video1.pause();
+})
+
+$('#change_src').bind('click',function(){
+	var src="movie.mp4";
+	$video.attr("src",src);
+	video1.play();
+})
+
+function FrametoSecond(frame){
+   var second=Math.ceil(frame/25);
+   return second;
+}
+
+window.onload=function(){
+	getparameter();
+	video1.play();
+}
+
+
+function getparameter(){
+    var a=getQueryStr("a");
+	//alert(a);
+	var src=getQueryStr("src");
+	//alert(src);
+     var thisURL = document.URL;
+	//var len=thisURL.length;
+    var  getval =thisURL.split('?')[1]; 
+    //newurl=thisURL.substr(getval,len);
+    	
+    var showval= getval.split("=")[1]; //获取页面传递参数	
+    //alert(showval);//获取参数
+	//var src=getQueryStr("src");
+	//alert(src);
+	$video.attr("src",src);
+	var second=FrametoSecond(a);
+    video1.currentTime=second; 
+}
+
+var LocString = String(window.document.location.href);           //获取传递参数的函数（正则）
+function getQueryStr(str) {
+var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString), tmp;
+if (tmp = rs) {
+return tmp[2];
+}
+// parameter cannot be found
+return "";
+}
+
+</script>

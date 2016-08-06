@@ -1,0 +1,271 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<link href="css/css.css" rel="stylesheet">
+	<link href="uploadify/uploadify.css" rel="stylesheet">
+	  <script type="text/javascript"
+      src="http://api.map.baidu.com/api?v=2.0&ak=E8d5c530f017e26ea4e9b03c9ca3899e"></script>
+	  <script type="text/javascript" src="http://api.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js"></script>
+      <title>search</title>
+</head>
+<body>
+     <div id="allmap"></div>
+     <div class="search">  
+     <form>
+     	   <input type="text"  placeholder="请输入查询的关键词" required="required">
+     	   <button type="button"  data-action="Search">搜索一下</button>
+     </form> 
+     </div>
+     <div class="time_select">
+        <label for="datetime-loccal">查询起始时间：</label><input id="date1" type="datetime-local" value=""/></br>
+        <label for="datetime-loccal">查询终止时间：</label><input id="date2" type="datetime-local" value=""/>
+		<button type="button"  data-action="SearchInBox">拉框</button>
+        <button type="button"  data-action="GetInfoByBox">GET</button>
+     </div>
+
+     <div class="leftSelect" id="leftSelect">
+   <!--  <div class="leftSelect-title" id="leftSelect-title">
+        </div> -->
+    <div class="leftSelect-show" id="leftSelect-show">
+   <!--  <a href="http://www.w3school.com.cn/" target="_blank">Visit W3School!</a><br>
+    <a href="http://www.baidu.com.cn/" target="_blank">Visit Baidu!</a><br>
+    <a href="http://www.google.com.cn/" target="_blank">Visit Google!</a><br> -->
+    <a href="video_test.htm?a=511" target="_blank">monitor video!</a><br>
+	<a href="video_test.htm" target="_blank">monitor video from start!</a><br>
+    </div>
+    <button type="button" class="leftSelect-previous" id="leftSelect-previous">上一页</button>
+    <button type="button" class="leftSelect-next" id="leftSelect-next">下一页</button>
+    </div>
+	
+	<div class="file_upload">
+	  <input type="file" id="up" onchange="set_imagesrc()"/>
+	   <img  id="img" class="img" width="120" height="120" />   	  
+	</div>
+</body>
+</html>
+<script src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+var camera_position = [
+{ "camera_id":"rmgy","name":"人民公园" , "longitude":"119.46" , "latitude":"31.7","video_src":"89.mp4"},
+{ "camera_id":"bgc","name":"北广场" , "longitude":"119.76" , "latitude":"31.5","video_src":"89.mp4"},
+{ "camera_id":"gjgd","name":"高景观灯" , "longitude": "119.86" , "latitude": "31.6","video_src":"movie.mp4"}
+];
+
+//var camera_position = [
+//{ "name":"park" ，"longitude":"119.46" , "latitude":"31.7" },
+//{ "name":"ground" , "longitude":"119.76" , "latitude":"31.5" },
+//{ "name":"light" , "longitude":"119.86" , "latitude": "31.6" }
+//];	
+
+  $(document).ready(function(){
+
+    document.getElementById("leftSelect").style.display="none";//隐藏
+
+  });
+
+// 百度地图API功能
+	var map = new BMap.Map("allmap");    // 创建Map实例
+	map.centerAndZoom(new BMap.Point(119.983, 31.792), 11);  // 初始化地图,设置中心点坐标和地图级别
+	map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+	map.setCurrentCity("常州");          // 设置地图显示的城市 此项是必须设置的
+	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+		   		   
+        
+	
+	//拉框查询
+	var dflag="0";
+    var sflag="0";
+    var a1="";
+    var b1="";
+    var a2="";
+    var b2="";
+    var polygon="";
+	
+
+    map.addEventListener("click", function(e){ 
+      if(sflag=="1"){
+      dflag="0";
+	  //alert(a1);
+	  //alert(b1);
+	  //alert(a2);
+	  //alert(b2);
+      return;
+    }	  
+    if(dflag=="1"){
+      a1=e.point.lng;
+      b1=e.point.lat;
+      beginMove();
+    } 
+   }); 
+
+   function beginMove(){
+   map.addEventListener("mousemove", function(e){ 
+    if(dflag=="1"){
+      if(polygon!=""){
+        map.removeOverlay(polygon);
+        polygon="";
+      }
+      a2=e.point.lng;
+      b2=e.point.lat;
+      polygon = new BMap.Polygon([
+        new BMap.Point(a1,b1),
+        new BMap.Point(a2,b1),
+        new BMap.Point(a2,b2),
+        new BMap.Point(a1,b2)
+      ], {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5});
+      map.addOverlay(polygon);
+      sflag="1";
+    } 
+  });	
+}
+//拉框查询
+ 
+     function set_imagesrc(){
+	 var file=document.getElementById("up");
+	 alert(file.value());
+	 }
+
+    //添加地图标注
+	function addMarker(point){
+	  var marker = new BMap.Marker(point);
+	  map.addOverlay(marker);
+	}
+	
+	function JudgePointInRectangle(point){
+	   if(point.lng>a1 &&point.lng<a2)
+	   {
+	       if(point.lat<b1 && point.lat>b2)
+		       return 1;
+	   }
+	   return 0;
+	}
+	
+	var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});// 左上角，添加比例尺
+	/*var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件*/
+	var top_right_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}); //右上角，仅包含平移和缩放按钮
+    map.addControl(top_left_control);        
+	/*map.addControl(top_left_navigation); */    
+	map.addControl(top_right_navigation);  
+
+   
+   //生成扇形
+   function Sector1(point2, radius, sDegree, eDegree, strokeColour, strokeWeight, Strokepacity, fillColour, fillOpacity, opts) {  
+    var points = [];  
+    var step = ((eDegree - sDegree) / 10) || 10;  
+    points.push(point2);  
+    for ( var i = sDegree; i < eDegree + 0.001; i += step) {  
+        points.push(EOffsetBearing(point2, radius, i));  
+    }  
+    points.push(point2);  
+    var polygon = new BMap.Polygon(  
+      points  
+    , {strokeColor:strokeColour, strokeWeight:strokeWeight, strokeOpacity:Strokepacity, fillColor: fillColour, fillOpacity:fillOpacity});  
+      
+    return polygon;  
+}  
+  
+  function EOffsetBearing(point3, dist, bearing) {  
+    var latConv = map.getDistance(point3, new BMap.Point(point3.lng + 0.1, point3.lat)) * 10;  
+    var lngConv = map.getDistance(point3, new BMap.Point(point3.lng, point3.lat + 0.1)) * 10;  
+    var lat = dist * Math.cos(bearing * Math.PI / 180) / latConv;  
+    var lng = dist * Math.sin(bearing * Math.PI / 180) / lngConv;  
+    return new BMap.Point(point3.lng + lng, point3.lat + lat);  
+}  
+  
+
+	
+	
+	var actionList={
+        'Search':function(){
+        	SearchResult();
+	
+			var camera_id_list="";
+			for(i=0;i<camera_position.length;++i)
+			{
+			 var point=new BMap.Point(parseFloat(camera_position[i].longitude),parseFloat(camera_position[i].latitude));   
+			if(JudgePointInRectangle(point))
+			{
+			camera_id_list=camera_id_list+camera_position[i].camera_id+",";  //获取选中的摄像头的id
+			addMarker(point);
+			var a=document.createElement("a");
+			var node=document.createTextNode(camera_position[i].name);
+			a.appendChild(node);
+            var src=camera_position[i].video_src;
+			//alert(src);
+            //var camera_src= "video_test.htm?a=511"+&&+src;
+            //alert(camera_src);			
+	        //a.setAttribute("href",camera_src); 
+			a.setAttribute("href","video_test.htm?a=511&&src="+src+"");
+			a.setAttribute("target","_blank");
+			//a.setAttribute("href","video_test.htm?a=511&&src=movie.mp4");
+			var element=document.getElementById("leftSelect-show");
+			element.appendChild(a);	
+            var br=document.createElement("br");
+            element.appendChild(br);			
+			//var polygon = new BMap.Polygon([
+		      //new BMap.Point(119.46,31.7),
+		      //new BMap.Point(119.418677,31.737667),
+		      //new BMap.Point(119.490872,31.737667)		      
+	        //], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
+	        //map.addOverlay(polygon);   //增加多边形
+			
+			
+           var polygon1 = Sector1(point, 400, 30, 90, "#0000ff", 3, 0.5, "#0000ff", 0.5);  //红绿蓝
+           map.addOverlay(polygon1);
+           var polygon2 = Sector1(point, 100, 30, 90, "#f8f8ff", 3, 0.5, "#f8f8ff", 0);  //红绿蓝	
+           map.addOverlay(polygon2);		   
+           //var polygon2 = Sector1(point, 4000, 150, 210, "#000000", 3, 0.5, "#00ff00", 0.5);  
+           //map.addOverlay(polygon2);  
+           //var polygon3 = Sector1(point, 4000, 270, 330, "#00ff00", 3, 0.5, "#00ff00", 0.5);  
+           //map.addOverlay(polygon3); 
+						
+			
+			//var myicon=new BMap.Icon("sxt.png",new BMap.Size(300,157));
+			//addMarker(point,{icon:myicon});
+			}
+		   }
+		 //$.getJSON('test.json',function(data){  
+		 //alert("JSON Data: " + data.rows[1].realName);	        
+          //});
+	        $.post("camera_id_list.asp",
+          {
+             name:camera_id_list
+          },
+         function(data,status){
+            alert("数据：" + data + "\n状态：" + status);
+         });
+	
+        },
+		'SearchInBox':function(){
+        	//alert('haha');
+		     dflag="1";
+						
+        },
+        'GetInfoByBox':function(){
+            $.get("demo_test.asp",function(data,status){
+              alert("数据：" + data + "\n状态：" + status);
+            });
+         }
+	};
+
+	body = $(document.body);
+	body.on('click','[data-action]',function(){
+		var actionname=$(this).data('action');
+		var action =actionList[actionname];
+        if($.isFunction(action)) action();
+	});
+
+   
+    //document.getElementById("").style.display="block";//显示
+
+
+	function SearchResult(){
+		//alert('haha');
+      document.getElementById("leftSelect").style.display="block";//显示
+
+	}
+</script>
+<script type="text/javascript">
+
+</script>

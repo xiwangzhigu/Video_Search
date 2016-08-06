@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商圈</title>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+</head>
+<body>
+<input type="button" onclick="openbut()" value="开启"/>
+<input type="button" onclick="closebut()" value="关闭"/>
+<div style="width:1200px;height:570px;border:1px solid gray" id="container"></div>
+</body>
+</html>
+<script type="text/javascript">
+var map = new BMap.Map("container");      //设置卫星图为底图
+var point1 = new BMap.Point(117.263865,34.151257);
+map.centerAndZoom(point1,15);//设定地图的中心点和坐标并将地图显示在地图容器中
+map.addControl(new BMap.NavigationControl());      //为地图添加鱼骨  
+map.enableScrollWheelZoom();//启用地图滚轮放大缩
+var dflag="0";
+var sflag="0";
+var a1="";
+var b1="";
+var a2="";
+var b2="";
+var polygon="";
+function openbut(){
+  dflag="1";
+}
+map.addEventListener("click", function(e){ 
+  if(sflag=="1"){
+    dflag="0";
+    return;
+  }	  
+  if(dflag=="1"){
+    a1=e.point.lng;
+    b1=e.point.lat;
+    beginMove();
+  } 
+}); 
+
+
+function beginMove(){
+  map.addEventListener("mousemove", function(e){ 
+    if(dflag=="1"){
+      if(polygon!=""){
+        map.removeOverlay(polygon);
+        polygon="";
+      }
+      a2=e.point.lng;
+      b2=e.point.lat;
+      polygon = new BMap.Polygon([
+        new BMap.Point(a1,b1),
+        new BMap.Point(a2,b1),
+        new BMap.Point(a2,b2),
+        new BMap.Point(a1,b2)
+      ], {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5});
+      map.addOverlay(polygon);
+      sflag="1";
+    } 
+  });	
+}
+</script>

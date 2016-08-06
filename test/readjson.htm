@@ -1,0 +1,41 @@
+ï»¿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>getJSON»ñÈ¡Êý¾Ý</title>
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<style type="text/css">
+ #divframe{ border:1px solid #999; width:500px; margin:0 auto;}
+ .loadTitle{ background:#CCC; height:30px;}
+</style>
+<script type="text/javascript">
+$(function(){
+	$("#btn").click(function(){
+        $.getJSON("userinfo.json",function(data){
+			var $jsontip = $("#jsonTip");
+			var strHtml = "123";//´æ´¢Êý¾ÝµÄ±äÁ¿
+			$jsontip.empty();//Çå¿ÕÄÚÈÝ
+			$.each(data,function(infoIndex,info){
+				  strHtml += "ÐÕÃû£º"+info["name"]+"<br>";
+				  strHtml += "ÐÔ±ð£º"+info["sex"]+"<br>";
+				  strHtml += "ÓÊÏä£º"+info["email"]+"<br>";
+				  strHtml += "<hr>"
+				})
+			$jsontip.html(strHtml);//ÏÔÊ¾´¦ÀíºóµÄÊý¾Ý	
+			})
+		})
+	
+	})
+</script>
+</head>
+
+<body>
+<div id="divframe">
+  <div class="loadTitle">
+    <input type="button" value="»ñÈ¡Êý¾Ý" id="btn"/>
+  </div>
+  <div id="jsonTip">
+  </div>
+</div>
+</body>
+</html>
